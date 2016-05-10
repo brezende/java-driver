@@ -614,6 +614,9 @@ public abstract class QueryLogger implements LatencyTracker {
      */
     @Override
     public void update(Host host, Statement statement, Exception exception, long newLatencyNanos) {
+        if (statement instanceof StatementWrapper)
+            statement = ((StatementWrapper) statement).getWrappedStatement();
+
         long latencyMs = NANOSECONDS.toMillis(newLatencyNanos);
         if (exception == null) {
             maybeLogNormalOrSlowQuery(host, statement, latencyMs);
